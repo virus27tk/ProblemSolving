@@ -128,3 +128,45 @@ public class Solution_Memoization
         return with || without;
     }
 }
+
+public class Solution {
+    public bool CanPartition(int[] nums) {
+
+        var sum1 = 0;
+        foreach (int i in nums){
+            sum1 += i;
+        }
+
+        if (sum1%2 != 0 ){
+            return false;
+        }
+
+        var expectedSum = sum1/2;
+        bool[,] dp = new bool[nums.Count()+1, expectedSum+1];
+        dp[0,0] = true;
+        for(int n = 0 ; n<=nums.Count() ; n++){
+            dp[n,0] = true;
+        }
+
+        for(int sum=1; sum<=expectedSum; sum++){
+            dp[0,sum] = false;
+        }
+
+        for(int i = 1 ; i<=nums.Count() ; i++)
+        {
+            for(int j=1; j<=expectedSum; j++)
+            {
+                if (j - nums[i-1] < 0){
+                    dp[i,j] = dp[i-1,j];
+                }
+                else if (j - nums[i-1] >= 0 )
+                {
+                    dp[i,j] = dp[i-1,j - nums[i-1]] || dp[i-1,j];
+                }
+            }
+        }
+
+        return dp[nums.Count(), expectedSum];
+
+    }
+}
